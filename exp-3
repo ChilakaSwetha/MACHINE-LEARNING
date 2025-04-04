@@ -1,0 +1,138 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPOWexxvUMv4lGjMgvFqwSW",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ChilakaSwetha/MACHINE-LEARNING/blob/main/exp-3\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "F_BQ8nL8goqA"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def candidate_elimination_algorithm(examples, attributes, target):\n",
+        "    # Initialize S (the most specific hypothesis) and G (the most general hypothesis)\n",
+        "    S = ['?' * len(attributes)]  # The most specific hypothesis (All features are '?' initially)\n",
+        "    G = [['?' * len(attributes)]]  # The most general hypothesis (All features are '?' initially)\n",
+        "\n",
+        "    # Iterate through each training example\n",
+        "    for example in examples:\n",
+        "        # If the target value of the example is positive (+), we modify S and G\n",
+        "        if example[-1] == target:\n",
+        "            S = [generalize_specific(hypothesis, example, attributes) for hypothesis in S]\n",
+        "        # If the target value of the example is negative (-), we modify G and S\n",
+        "        else:\n",
+        "            G = [specialize_general(hypothesis, example, attributes) for hypothesis in G]\n",
+        "\n",
+        "    return S, G\n",
+        "\n",
+        "\n",
+        "def generalize_specific(hypothesis, example, attributes):\n",
+        "    new_hypothesis = ''\n",
+        "    for h, e in zip(hypothesis, example[:-1]):  # Ignore the target attribute\n",
+        "        if h == '?':\n",
+        "            new_hypothesis += e\n",
+        "        else:\n",
+        "            new_hypothesis += '?' if e != h else h\n",
+        "    return new_hypothesis\n",
+        "\n",
+        "\n",
+        "def specialize_general(hypothesis, example, attributes):\n",
+        "    new_hypothesis = []\n",
+        "    for h, e in zip(hypothesis, example[:-1]):  # Ignore the target attribute\n",
+        "        if h == '?':\n",
+        "            new_hypothesis.append(e)\n",
+        "        else:\n",
+        "            new_hypothesis.append('?')\n",
+        "    return new_hypothesis\n",
+        "\n",
+        "\n",
+        "# Example usage of the Candidate Elimination Algorithm\n",
+        "if __name__ == \"__main__\":\n",
+        "    # Dataset: [Outlook, Temperature, Humidity, Wind, PlayTennis (Target)]\n",
+        "    examples = [\n",
+        "        ['Sunny', 'Hot', 'High', 'Weak', 'No'],\n",
+        "        ['Sunny', 'Hot', 'High', 'Strong', 'No'],\n",
+        "        ['Overcast', 'Hot', 'High', 'Weak', 'Yes'],\n",
+        "        ['Rain', 'Mild', 'High', 'Weak', 'Yes'],\n",
+        "        ['Rain', 'Cool', 'Normal', 'Weak', 'Yes'],\n",
+        "        ['Rain', 'Cool', 'Normal', 'Strong', 'No'],\n",
+        "        ['Overcast', 'Cool', 'Normal', 'Strong', 'Yes'],\n",
+        "        ['Sunny', 'Mild', 'High', 'Weak', 'No'],\n",
+        "        ['Sunny', 'Cool', 'Normal', 'Weak', 'Yes'],\n",
+        "        ['Rain', 'Mild', 'Normal', 'Weak', 'Yes'],\n",
+        "        ['Sunny', 'Mild', 'Normal', 'Strong', 'Yes'],\n",
+        "        ['Overcast', 'Mild', 'High', 'Strong', 'Yes'],\n",
+        "        ['Overcast', 'Hot', 'Normal', 'Weak', 'Yes'],\n",
+        "        ['Rain', 'Mild', 'High', 'Strong', 'No']\n",
+        "    ]\n",
+        "\n",
+        "    # Attributes (excluding the target attribute \"PlayTennis\")\n",
+        "    attributes = ['Outlook', 'Temperature', 'Humidity', 'Wind']\n",
+        "\n",
+        "    # Target class is \"PlayTennis\" (positive for \"Yes\" and negative for \"No\")\n",
+        "    target = 'Yes'\n",
+        "\n",
+        "    # Run the Candidate Elimination algorithm\n",
+        "    S, G = candidate_elimination_algorithm(examples, attributes, target)\n",
+        "\n",
+        "    print(\"Most Specific Hypothesis (S):\")\n",
+        "    for hypothesis in S:\n",
+        "        print(hypothesis)\n",
+        "\n",
+        "    print(\"\\nMost General Hypothesis (G):\")\n",
+        "    for hypothesis in G:\n",
+        "        print(hypothesis)\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "03xMdNjKhUA3",
+        "outputId": "76ac3aba-8cdb-44c3-abab-f4ff93b63f07"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Most Specific Hypothesis (S):\n",
+            "OvercastHotNormalWeak\n",
+            "\n",
+            "Most General Hypothesis (G):\n",
+            "['?']\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
