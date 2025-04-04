@@ -1,0 +1,82 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMD/rk6yNRWk3QPbdZesktl",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ChilakaSwetha/MACHINE-LEARNING/blob/main/exp-9\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "F_BQ8nL8goqA"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "from scipy.linalg import inv\n",
+        "\n",
+        "# Step 1: Locally Weighted Linear Regression (LWLR)\n",
+        "def locally_weighted_regression(X, y, tau=1.0):\n",
+        "    \"\"\"\n",
+        "    Perform locally weighted linear regression to fit a model to the data.\n",
+        "\n",
+        "    Parameters:\n",
+        "        X (numpy.ndarray): Input data, shape (m, n).\n",
+        "        y (numpy.ndarray): Target values, shape (m, 1).\n",
+        "        tau (float): The width of the Gaussian kernel.\n",
+        "\n",
+        "    Returns:\n",
+        "        numpy.ndarray: The estimated weights for the regression.\n",
+        "    \"\"\"\n",
+        "    m, n = X.shape\n",
+        "    weights = np.zeros((m, m))  # Initialize the weight matrix\n",
+        "\n",
+        "    # Step 2: Compute the weight matrix based on the Gaussian kernel\n",
+        "    for i in range(m):\n",
+        "        diff = X - X[i]\n",
+        "        # Fix: Use item() to get the scalar value from the 1D array\n",
+        "        weights[i, i] = np.exp(-np.sum(diff**2) / (2 * tau**2)).item()\n",
+        "\n",
+        "    # Step 3: Compute theta using the weighted least squares solution\n",
+        "    X_T = np.column_stack((np.ones(m), X))  # Add a bias term to the input data\n",
+        "    W = np.dot(X_T.T, np.dot(weights, X_T))  # Weighted X^T * X\n",
+        "    theta = np.dot(inv(W), np.dot(X_T.T, np.dot(weights, y)))  # Final weights (theta)\n",
+        "\n",
+        "    return theta\n",
+        "\n",
+        "# ... (rest of the code remains the same)\n"
+      ],
+      "metadata": {
+        "id": "M35qZo8XnvcZ"
+      },
+      "execution_count": 29,
+      "outputs": []
+    }
+  ]
+}
